@@ -41,7 +41,7 @@ class Documentation {
 	public static function convertYAML($text) {
 		
 		try {
-			$yaml = YAML::parse($text);
+			$yaml = Yaml::parse($text);
 		} catch (ParseException $e) {
 			printf("unable to parse documentation: %s..\n", $e->getMessage());
 		}
