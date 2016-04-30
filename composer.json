@@ -23,8 +23,8 @@
 		"source":         "https://github.com/pattern-lab/patternlab-php-core/releases"
 	},
 	"autoload": {
-		"psr-0": {
-			"PatternLab":   "src/"
+		"psr-4": {
+			"PatternLab\\":   "src/"
 		}
 	},
 	"minimum-stability": "dev",

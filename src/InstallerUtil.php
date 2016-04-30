@@ -56,7 +56,7 @@ class InstallerUtil {
 		Console::init();
 
 		// initialize the config for the pluginDir
-		$baseDir = __DIR__."/../../../../../";
+		$baseDir = __DIR__."/../../../../";
 		Config::init($baseDir,false);
 
 		Dispatcher::init();
