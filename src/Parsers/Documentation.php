@@ -12,7 +12,7 @@
 
 namespace PatternLab\Parsers;
 
-use \Michelf\MarkdownExtra;
+use \League\CommonMark\CommonMarkConverter;
 use \PatternLab\Timer;
 use \Symfony\Component\Yaml\Exception\ParseException;
 use \Symfony\Component\Yaml\Yaml;
@@ -28,7 +28,8 @@ class Documentation {
 	* @return {String}       the converted mark-up
 	*/
 	public static function convertMarkdown($text) {
-		$markdown = MarkdownExtra::defaultTransform($text);
+		$converter = new CommonMarkConverter();
+		$markdown = $converter->convertToHtml($text);
 		return $markdown;
 	}
 	
