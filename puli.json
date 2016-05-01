@@ -1,0 +1,15 @@
+{
+    "version": "1.0",
+    "binding-types": {
+        "pattern-lab/command": {},
+        "pattern-lab/datakit": {},
+        "pattern-lab/mustachehelper": {},
+        "pattern-lab/patternengine": {},
+        "pattern-lab/patternkit": {},
+        "pattern-lab/plugin": {},
+        "pattern-lab/starterkit": {},
+        "pattern-lab/styleguidekit": {},
+        "pattern-lab/styleguidetheme": {},
+        "pattern-lab/twighelper": {}
+    }
+}

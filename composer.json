@@ -36,7 +36,6 @@
 		"symfony/finder": "2.6.4|^3.0",
 		"symfony/yaml": "2.6.4|^3.0",
 		"kevinlebrun/colors.php": "0.4.1 - 1.0",
-		"pattern-lab/unified-asset-installer": "^0.6-dev",
 		"alchemy/zippy": "0.2.1 - 0.3"
 	},
 	"extra": {
