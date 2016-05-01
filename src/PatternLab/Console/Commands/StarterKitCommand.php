@@ -15,26 +15,28 @@ use \PatternLab\Console;
 use \PatternLab\Console\Command;
 use \PatternLab\Fetch;
 use \PatternLab\Timer;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class StarterKitCommand extends Command {
 	
-	public function __construct() {
+	protected function configure() {
 		
-		parent::__construct();
-		
-		$this->command = "starterkit";
-		
-		Console::setCommand($this->command,"Initialize or fetch a specific StarterKit","The StarterKit command downloads StarterKits.","k");
-		Console::setCommandOption($this->command,"init","Initialize with a blank StarterKit based on the active PatternEngine.","To initialize your project with a base StarterKit:","i");
-		Console::setCommandOption($this->command,"install:","Fetch a specific StarterKit from GitHub.","To fetch a StarterKit from GitHub:","j:","<starterkit-name>");
-		
+		$this
+			->setName('starterkit')
+			->setDescription('Initialize or fetch a specific StarterKit')
+			->setHelp('The StarterKit command downloads StarterKits.')
+			->addOption('init', 'i', InputOption::VALUE_NONE, 'Initialize with a blank StarterKit based on the active PatternEngine.')
+			->addOption('install', 'f', InputOption::VALUE_REQUIRED, 'Fetch a specific StarterKit from GitHub.')
+		;
 	}
 	
-	public function run() {
+	protected function execute(InputInterface $input, OutputInterface $output) {
 		
 		// find the value given to the command
-		$init       = Console::findCommandOption("i|init");
-		$starterkit = Console::findCommandOptionValue("f|install");
+		$init       = $input->getOption('init');
+		$starterkit = $input->getOption('install');
 		
 		if ($init) {
 			$patternEngine = Config::getOption("patternExtension");
@@ -46,10 +48,6 @@ class StarterKitCommand extends Command {
 			// download the starterkit
 			$f = new Fetch();
 			$f->fetchStarterKit($starterkit);
-			
-		} else {
-			
-			Console::writeHelpCommand($this->command);
 			
 		}
 		

@@ -14,27 +14,32 @@ use \PatternLab\Config;
 use \PatternLab\Console;
 use \PatternLab\Console\Command;
 use \PatternLab\Timer;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ServerCommand extends Command {
 	
-	public function __construct() {
 		
-		parent::__construct();
 		
-		$this->command = "server";
-		
-		Console::setCommand($this->command,"Start the PHP-based server","The server command will start PHP's web server for you.","s");
-		Console::setCommandOption($this->command,"host:","Provide a custom hostname. Default value is <path>localhost</path>.","To use a custom hostname and the default port:","","<host>");
-		Console::setCommandOption($this->command,"port:","Provide a custom port. Default value is <path>8080</path>.","To use a custom port and the default hostname:","","<port>");
-		Console::setCommandSample($this->command,"To provide both a custom hostname and port:","--host <host> --port <port>");
-		
+	protected function configure()
+	{
+		$this
+			->setName('server')
+			->setDescription('Start the PHP-based server')
+			->setHelp('The server command will start PHP\'s web server for you.')
+			->addOption('host', null, InputOption::VALUE_REQUIRED, 'Provide a custom hostname.', 'localhost')
+			->addOption('port', null, InputOption::VALUE_REQUIRED, 'Provide a custom port.', 8080)
+			->addUsage('--host <host> --port <port> # To provide both a custom hostname and port:')
+		;
 	}
 	
-	public function run() {
 		
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
 		if (version_compare(phpversion(), '5.4.0', '<')) {
 			
-			Console::writeWarning("you must have PHP 5.4.0 or greater to use this feature. you are using PHP ".phpversion()."...");
+			$output->writeln("<warning>you must have PHP 5.4.0 or greater to use this feature. you are using PHP ".phpversion()."...</warning>");
 			
 		} else {
 			
@@ -42,14 +47,14 @@ class ServerCommand extends Command {
 			$publicDir = Config::getOption("publicDir");
 			$coreDir   = Config::getOption("coreDir");
 			
-			$host = Console::findCommandOptionValue("host");
+			$host = $input->getOption("host");
 			$host = $host ? $host : "localhost";
 			
-			$port = Console::findCommandOptionValue("port");
+			$port = $input->getOption("port");
 			$host = $port ? $host.":".$port : $host.":8080";
 			
 			// start-up the server with the router
-			Console::writeInfo("server started on ".$host.". use ctrl+c to exit...");
+			$output->writeln("<info>server started on ".$host.". use ctrl+c to exit...</info>");
 			passthru("cd ".$publicDir." && ".$_SERVER["_"]." -S ".$host." ".$coreDir."/server/router.php");
 			
 		}

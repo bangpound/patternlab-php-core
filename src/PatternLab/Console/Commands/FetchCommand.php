@@ -15,24 +15,27 @@ use \PatternLab\Console;
 use \PatternLab\Console\Command;
 use \PatternLab\Fetch;
 use \PatternLab\Timer;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class FetchCommand extends Command {
 	
-	public function __construct() {
+	protected function configure()
+	{
 		
-		parent::__construct();
-		
-		$this->command = "fetch";
-		
-		Console::setCommand($this->command,"Fetch a package or StarterKit","The fetch command downloads packages and StarterKits.","f");
-		Console::setCommandOption($this->command,"package:","Fetch a package from Packagist.","To fetch a package from Packagist:","p:","<package-name>");
-		
+		$this->setName('fetch')
+			->setDescription('Fetch a package or StarterKit')
+			->setHelp('The fetch command downloads packages and StarterKits.')
+			->addOption('package', 'p', InputOption::VALUE_REQUIRED, 'Fetch a package from Packagist.')
+		;
 	}
 	
-	public function run() {
 		
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
 		// find the value given to the command
-		$package    = Console::findCommandOptionValue("p|package");
+		$package    = $input->getOption("package");
 		
 		if ($package) {
 			
@@ -45,16 +48,14 @@ class FetchCommand extends Command {
 			
 			// make sure it looks like a valid package
 			if (strpos($package,"/") === false) {
-				Console::writeError("that wasn't a valid package name. it should look like <info>pattern-lab/plugin-kss</info>...");
+				$output->writeln('<error>that wasn\'t a valid package name. it should look like <info>pattern-lab/plugin-kss</info>...</error>');
 			}
 			
 			// run composer via fetch
 			$f = new Fetch();
 			$f->fetchPackage($package);
 			
-		} else {
 			
-			Console::writeHelpCommand($this->command);
 			
 		}
 		

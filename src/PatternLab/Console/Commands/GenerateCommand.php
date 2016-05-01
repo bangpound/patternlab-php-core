@@ -15,27 +15,30 @@ use \PatternLab\Console;
 use \PatternLab\Console\Command;
 use \PatternLab\Generator;
 use \PatternLab\Timer;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateCommand extends Command {
 	
-	public function __construct() {
-		
-		parent::__construct();
-		
-		$this->command = "generate";
-		
-		Console::setCommand($this->command,"Generate Pattern Lab","The generate command generates an entire site a single time. By default it removes old content in <path>public/</path>, compiles the patterns and moves content from <path>source/</path> into <path>public/</path>","g");
-		Console::setCommandOption($this->command,"patternsonly","Generate only the patterns. Does NOT clean <path>public/</path>.","To generate only the patterns:","p");
-		Console::setCommandOption($this->command,"nocache","Set the cacheBuster value to 0.","To turn off the cacheBuster:","n");
-		
+	protected function configure()
+	{
+		$this
+			->setName('generate')
+			->setDescription('Generate Pattern Lab')
+			->setHelp('The generate command generates an entire site a single time. By default it removes old content in <path>public/</path>, compiles the patterns and moves content from <path>source/</path> into <path>public/</path>')
+			->addOption('patternsonly', 'p', InputOption::VALUE_NONE, 'Generate only the patterns. Does NOT clean <path>public/</path>.')
+			->addOption('nocache', 'nc', InputOption::VALUE_NONE, 'Set the cacheBuster value to 0.')
+		;
 	}
 	
-	public function run() {
 		
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
 		// set-up required vars
 		$options                  = array();
-		$options["moveStatic"]    = (Console::findCommandOption("p|patternsonly")) ? false : true;
-		$options["noCacheBuster"] = Console::findCommandOption("n|nocache");
+		$options["moveStatic"]    = ($input->getOption("patternsonly")) ? false : true;
+		$options["noCacheBuster"] = $input->getOption("nocache");
 		
 		$g = new Generator();
 		$g->generate($options);

@@ -19,26 +19,25 @@ use \PatternLab\Console\Command;
 use \PatternLab\FileUtil;
 use \PatternLab\Generator;
 use \PatternLab\Timer;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ExportCommand extends Command {
 	
-	public function __construct() {
-		
-		parent::__construct();
-		
-		$this->command = "export";
-		
-		Console::setCommand($this->command,"Export Pattern Lab patterns & assets","The export command generates your patterns without Pattern Lab's CSS & JS, copies static assets from <path>public/</path>, and puts all of it in <path>export/</path>.","e");
-		Console::setCommandOption($this->command,"clean","Don't add any header or footer mark-up to the exported patterns.","To generate clean versions of your patterns:");
-		
+	protected function configure() {
+		$this->setName('export')
+		->setDescription('Export Pattern Lab patterns & assets')
+		->setHelp('The export command generates your patterns without Pattern Lab\'s CSS & JS, copies static assets from <path>public/</path>, and puts all of it in <path>export/</path>.')
+			->addOption('clean', null, InputOption::VALUE_NONE, 'Don\'t add any header or footer mark-up to the exported patterns.');
 	}
 	
-	public function run() {
+	protected function execute(InputInterface $input, OutputInterface $output) {
 		
 		// set-up required vars
 		$options                = array();
 		$options["exportFiles"] = true;
-		$options["exportClean"] = Console::findCommandOption("clean");
+		$options["exportClean"] = $input->getOption("clean");
 		$options["moveStatic"]  = false;
 		
 		FileUtil::cleanExport();

@@ -15,25 +15,26 @@ use \PatternLab\Console;
 use \PatternLab\Console\Command;
 use \PatternLab\Generator;
 use \PatternLab\Timer;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ConfigCommand extends Command {
 	
-	public function __construct() {
-		
-		parent::__construct();
-		
-		$this->command = "config";
-		
-		Console::setCommand($this->command,"Configure Pattern Lab","The --config command allows for the review and update of existing Pattern Lab config options.","c");
-		Console::setCommandOption($this->command,"get:","Get the value for a specific config option.","To get a configuration option:","","configOption");
-		Console::setCommandOption($this->command,"list","List the current config options.","To list the current configuration:");
-		Console::setCommandOption($this->command,"set:","Set the value for a specific config option.","To set a configuration option:","","configOption=\"configValue\"");
-		
+	protected function configure() {
+		$this
+			->setName('config')
+			->setDescription('Configure Pattern Lab')
+			->setHelp('The --config command allows for the review and update of existing Pattern Lab config options.')
+			->addOption('get', null, InputOption::VALUE_REQUIRED, 'Get the value for a specific config option.')
+			->addOption('list', null, InputOption::VALUE_NONE, 'List the current config options.')
+			->addOption('set', null, InputOption::VALUE_REQUIRED, 'Set the value for a specific config option.')
+		;
 	}
 	
-	public function run() {
+	public function execute(InputInterface $input, OutputInterface $output) {
 		
-		if (Console::findCommandOption("list")) {
+		if ($input->getOption('list')) {
 			
 			// get all of the options
 			$options = Config::getOptions();
@@ -52,31 +53,31 @@ class ConfigCommand extends Command {
 				$optionValue = (is_array($optionValue)) ? implode(", ",$optionValue) : $optionValue;
 				$optionValue = (!$optionValue) ? "false" : $optionValue;
 				$spacer      = Console::getSpacer($lengthLong,strlen($optionName));
-				Console::writeLine("<info>".$optionName.":</info>".$spacer.$optionValue);
+				$output->writeln("<info>".$optionName.":</info>".$spacer.$optionValue);
 			}
 			
-		} else if (Console::findCommandOption("get")) {
+		} else if ($input->getOption("get")) {
 			
 			// figure out which optino was passed
-			$searchOption = Console::findCommandOptionValue("get");
+			$searchOption = $input->getOption("get");
 			$optionValue  = Config::getOption($searchOption);
 			
 			// write it out
 			if (!$optionValue) {
-				Console::writeError("the --get value you provided, <info>".$searchOption."</info>, does not exists in the config...");
+				$output->writeln("<error>the --get value you provided, <info>".$searchOption."</info>, does not exists in the config...</error>");
 			} else {
 				$optionValue = (is_array($optionValue)) ? implode(", ",$optionValue) : $optionValue;
 				$optionValue = (!$optionValue) ? "false" : $optionValue;
-				Console::writeInfo($searchOption.": <ok>".$optionValue."</ok>");
+				$output->writeln('<info>'.$searchOption.": <ok>".$optionValue."</ok></info>");
 			}
 			
-		} else if (Console::findCommandOption("set")) {
+		} else if ($input->getOption("set")) {
 			
 			// find the value that was passed
-			$updateOption = Console::findCommandOptionValue("set");
+			$updateOption = $input->getOption("set");
 			$updateOptionBits = explode("=",$updateOption);
 			if (count($updateOptionBits) == 1) {
-				Console::writeError("the --set value should look like <info>optionName=\"optionValue\"</info>. nothing was updated...");
+				$output->writeln("<error>the --set value should look like <info>optionName=\"optionValue\"</info>. nothing was updated...</error>");
 			} 
 			
 			// set the name and value that were passed
@@ -87,15 +88,10 @@ class ConfigCommand extends Command {
 			$currentValue = Config::getOption($updateName);
 			
 			if (!$currentValue) {
-				Console::writeError("the --set option you provided, <info>".$updateName."</info>, does not exists in the config. nothing will be updated...");
+				$output->writeln("<error>the --set option you provided, <info>".$updateName."</info>, does not exists in the config. nothing will be updated...</error>");
 			} else {
 				Config::updateConfigOption($updateName,$updateValue);
 			}
-			
-		} else {
-			
-			// no acceptable options were passed so write out the help
-			Console::writeHelpCommand($this->command);
 			
 		}
 		

@@ -16,36 +16,38 @@ use \PatternLab\Console\Command;
 use \PatternLab\Generator;
 use \PatternLab\Timer;
 use \PatternLab\Watcher;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class WatchCommand extends Command {
-	
-	public function __construct() {
-		
-		parent::__construct();
-		
-		$this->command = "watch";
-		
-		Console::setCommand($this->command,"Watch for changes and regenerate","The watch command builds Pattern Lab, watches for changes in <path>source/</path> and regenerates Pattern Lab when there are any.","w");
-		Console::setCommandOption($this->command,"patternsonly","Watches only the patterns. Does NOT clean <path>public/</path>.","To watch and generate only the patterns:","p");
-		Console::setCommandOption($this->command,"nocache","Set the cacheBuster value to 0.","To watch and turn off the cache buster:","n");
-		Console::setCommandOption($this->command,"sk","Watch for changes to the StarterKit and copy to <path>source/</path>. The <info>--sk</info> flag should only be used if one is actively developing a StarterKit.","To watch for changes to the StarterKit:");
-		Console::setCommandSample($this->command,"To watch only patterns and turn off the cache buster:","--patternsonly --nocache");
-		//Console::setCommandOption($this->command,"autoreload","Turn on the auto-reload service.","To turn on auto-reload:","r");
-		
+
+	protected function configure()
+	{
+		$this
+			->setName('watch')
+			->setDescription('Watch for changes and regenerate')
+			->setHelp('The watch command builds Pattern Lab, watches for changes in <path>source/</path> and regenerates Pattern Lab when there are any.')
+			->addOption('patternsonly', 'p', InputOption::VALUE_NONE, 'Watches only the patterns. Does NOT clean <path>public/</path>.')
+			->addOption('nocache', 'nc', InputOption::VALUE_NONE, 'Set the cacheBuster value to 0.')
+			->addOption('sk', null, InputOption::VALUE_NONE, 'Watch for changes to the StarterKit and copy to <path>source/</path>. The <info>--sk</info> flag should only be used if one is actively developing a StarterKit.')
+			->addUsage('--patternsonly --nocache # To watch only patterns and turn off the cache buster.')
+		;
 	}
 	
-	public function run() {
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
 		
 		// set-up required vars
 		$options                  = array();
-		$options["moveStatic"]    = (Console::findCommandOption("p|patternsonly")) ? false : true;
-		$options["noCacheBuster"] = Console::findCommandOption("n|nocache");
+		$options["moveStatic"]    = ($input->getOption("patternsonly")) ? false : true;
+		$options["noCacheBuster"] = $input->getOption("nocache");
 		
 		// DEPRECATED
 		// $options["autoReload"]    = Console::findCommandOption("r|autoreload");
 		
 		// see if the starterKit flag was passed so you know what dir to watch
-		if (Console::findCommandOption("sk")) {
+		if ($input->getOption("sk")) {
 			
 			// load the starterkit watcher
 			$w = new Watcher();

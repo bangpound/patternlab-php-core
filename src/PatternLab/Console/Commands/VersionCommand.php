@@ -14,23 +14,21 @@ use \PatternLab\Config;
 use \PatternLab\Console;
 use \PatternLab\Console\Command;
 use \PatternLab\Timer;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class VersionCommand extends Command {
 	
-	public function __construct() {
+	protected function configure() {
 		
-		parent::__construct();
-		
-		$this->command = "version";
-		
-		Console::setCommand($this->command,"Print the version number","The version command prints out the current version of Pattern Lab.","v");
-		
+		$this->setName('version')
+			->setDescription('Print the version number')
+			->setHelp('The version command prints out the current version of Pattern Lab.')
+		;
 	}
 	
-	public function run() {
-		
-		Console::writeInfo("you're running <desc>v".Config::getOption("v")."</desc> of the PHP version of Pattern Lab...");
-		
+	public function execute(InputInterface $input, OutputInterface $output) {
+		$output->writeln("<info>you're running <desc>v".Config::getOption("v")."</desc> of the PHP version of Pattern Lab...</info>");
 	}
 	
 }
