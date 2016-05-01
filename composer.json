@@ -27,6 +27,11 @@
 			"PatternLab\\":   "src/"
 		}
 	},
+	"autoload-dev": {
+		"psr-4": {
+			"PatternLab\\Tests\\": "tests/"
+		}
+	},
 	"require": {
 		"php": ">=5.3.6",
 		"league/commonmark": "^0.13",
@@ -43,5 +48,8 @@
 		"branch-alias": {
 			"dev-develop": "0.8.x-dev"
 		}
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^5.3"
 	}
 }
