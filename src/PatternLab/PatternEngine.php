@@ -46,7 +46,7 @@ class PatternEngine {
 		}
 		
 		if (!$found) {
-			Console::writeError("the supplied pattern extension didn't match a pattern loader rule. check your config...");
+			throw new \RuntimeException("the supplied pattern extension didn't match a pattern loader rule. check your config...");
 		}
 		
 	}
@@ -61,7 +61,7 @@ class PatternEngine {
 		
 		// see if the package dir exists. if it doesn't it means composer hasn't been run
 		if (!is_dir($packagesDir)) {
-			Console::writeError("you haven't fully set-up Pattern Lab yet. please add a pattern engine...");
+			throw new \RuntimeException("you haven't fully set-up Pattern Lab yet. please add a pattern engine...");
 		}
 		
 		// make sure the pattern engine data exists
@@ -78,7 +78,7 @@ class PatternEngine {
 			}
 			
 		} else {
-			Console::writeError("The pattern engines list isn't available in <path>".$packagesDir."</path>...");
+			throw new \RuntimeException("The pattern engines list isn't available in <path>".$packagesDir."</path>...");
 		}
 		
 	}

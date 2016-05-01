@@ -448,18 +448,6 @@ class Console {
 	}
 	
 	/**
-	* Write out a line to the console with error tags. It forces an exit of the script
-	* @param  {String}        the content to be written out
-	* @param  {Boolean}       if there should be two spaces added to the beginning of the line
-	* @param  {Boolean}       if there should be two breaks added to the end of the line
-	*/
-	public static function writeError($line,$doubleSpace = false,$doubleBreak = false) {
-		$lineFinal = self::addTags($line,"error");
-		self::writeLine($lineFinal,$doubleSpace,$doubleBreak);
-		exit(1);
-	}
-	
-	/**
 	* Write out a line to the console with info tags
 	* @param  {String}        the content to be written out
 	* @param  {Boolean}       if there should be two spaces added to the beginning of the line
@@ -523,7 +511,7 @@ class Console {
 		
 		// check prompt
 		if (empty($prompt)) {
-			Console::writeError("an input prompt requires prompt text...");
+			throw new \RuntimeException("an input prompt requires prompt text...");
 		}
 		
 		// if there are suggested options add them

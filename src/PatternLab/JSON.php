@@ -47,7 +47,7 @@ class JSON {
 			Console::writeLine("");
 			$parser = new JsonLint\JsonParser();
 			$error  = $parser->lint($data);
-			Console::writeError($error->getMessage(), false, true);
+			throw new \RuntimeException($error->getMessage(), false, true);
 		}
 	}
 	

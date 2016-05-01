@@ -51,7 +51,7 @@ class RawPatternHelper extends \PatternLab\PatternData\Helper {
 				if (file_exists($path)) {
 					PatternData::setPatternOption($patternStoreKey,"patternRaw",file_get_contents($path));
 				} else {
-					Console::writeError($patternStoreData["partial"]." wasn't found for loading. the given path: ".$path);
+					throw new \RuntimeException($patternStoreData["partial"]." wasn't found for loading. the given path: ".$path);
 				}
 				
 			}

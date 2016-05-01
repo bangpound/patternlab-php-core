@@ -83,7 +83,7 @@ class Config {
 		
 		// make sure a base dir was supplied
 		if (empty($baseDir)) {
-			Console::writeError("need a base directory to initialize the config class...");
+			throw new \RuntimeException('need a base directory to initialize the config class...');
 		}
 		
 		// normalize the baseDir
@@ -91,7 +91,7 @@ class Config {
 		
 		// double-check the default config file exists
 		if (!is_dir($baseDir)) {
-			Console::writeError("make sure ".$baseDir." exists...");
+			throw new \RuntimeException("make sure ".$baseDir." exists...");
 		}
 		
 		// set the baseDir option
@@ -121,14 +121,14 @@ class Config {
 		
 		// double-check the default config file exists
 		if (!file_exists(self::$plConfigPath)) {
-			Console::writeError("make sure <path>".self::$plConfigPath."</path> exists before trying to have Pattern Lab build the config.yml file automagically...");
+			throw new \RuntimeException("make sure <path>".self::$plConfigPath."</path> exists before trying to have Pattern Lab build the config.yml file automagically...");
 		}
 		
 		// set the default config using the pattern lab config
 		try {
 			$data = Yaml::parse(file_get_contents(self::$plConfigPath));
 		} catch (ParseException $e) {
-			Console::writeError("Config parse error in <path>".self::$plConfigPath."</path>: ".$e->getMessage());
+			throw new \RuntimeException("Config parse error in <path>".self::$plConfigPath."</path>: ".$e->getMessage(), 0, $e);
 		}
 		
 		// load the options from the default file
@@ -148,7 +148,7 @@ class Config {
 			try {
 				$data = Yaml::parse(file_get_contents(self::$userConfigPath));
 			} catch (ParseException $e) {
-				Console::writeError("Config parse error in <path>".self::$userConfigPath."</path>: ".$e->getMessage());
+				throw new \RuntimeException("Config parse error in <path>".self::$userConfigPath."</path>: ".$e->getMessage(), 0, $e);
 			}
 			self::loadOptions($data);
 		}
@@ -163,8 +163,7 @@ class Config {
 			}
 			if ($migrate) {
 				if (!@copy(self::$plConfigPath, self::$userConfigPath)) {
-					Console::writeError("make sure that Pattern Lab can write a new config to ".self::$userConfigPath."...");
-					exit;
+					throw new \RuntimeException("make sure that Pattern Lab can write a new config to ".self::$userConfigPath."...");
 				}
 			} else {
 				self::$options = self::writeNewConfigFile(self::$options,$defaultOptions);
@@ -173,8 +172,7 @@ class Config {
 		
 		// making sure the config isn't empty
 		if (empty(self::$options) && $verbose) {
-			Console::writeError("a set of configuration options is required to use Pattern Lab...");
-			exit;
+			throw new \RuntimeException("a set of configuration options is required to use Pattern Lab...");
 		}
 		
 		// set-up the various dirs
@@ -371,7 +369,7 @@ class Config {
 		try {
 			$options = Yaml::parse(file_get_contents(self::$userConfigPath));
 		} catch (ParseException $e) {
-			Console::writeError("Config parse error in <path>".self::$userConfigPath."</path>: ".$e->getMessage());
+			throw new \RuntimeException("Config parse error in <path>".self::$userConfigPath."</path>: ".$e->getMessage(), 0, $e);
 		}
 		
 		if (isset($options[$optionName]) && is_array($options[$optionName])) {

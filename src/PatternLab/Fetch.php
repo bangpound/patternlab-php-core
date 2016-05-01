@@ -32,7 +32,7 @@ class Fetch {
 	public function fetchPackage($package = "") {
 		
 		if (empty($package)) {
-			Console::writeError("please provide a path for the package before trying to fetch it...");
+			throw new \RuntimeException("please provide a path for the package before trying to fetch it...");
 		}
 		
 		// run composer
@@ -52,7 +52,7 @@ class Fetch {
 		
 		// double-checks options was properly set
 		if (empty($starterkit)) {
-			Console::writeError("please provide a path for the starterkit before trying to fetch it...");
+			throw new \RuntimeException("please provide a path for the starterkit before trying to fetch it...");
 		}
 
 		// figure out the options for the GH path
@@ -73,7 +73,7 @@ class Fetch {
 		// try to download the given package
 		if (!$package = @file_get_contents($tarballUrl)) {
 			$error = error_get_last();
-			Console::writeError("the starterkit wasn't downloaded because:\n\n  ".$error["message"]);
+			throw new \RuntimeException("the starterkit wasn't downloaded because:\n\n  ".$error["message"]);
 		}
 
 		// Create temp directory if doesn't exist
@@ -81,7 +81,7 @@ class Fetch {
 		try {
 		    $fs->mkdir($tempDir, 0775);
 		} catch (IOExceptionInterface $e) {
-			Console::writeError("Error creating temporary directory at " . $e->getPath());
+			throw new \RuntimeException("Error creating temporary directory at " . $e->getPath());
 		}
 		
 		// write the package to the temp directory
@@ -106,7 +106,7 @@ class Fetch {
 		}
 		// thrown an error if temp/dist/ doesn't exist
 		if (!is_dir($tempDirDist)) {
-			Console::writeError("the starterkit needs to contain a dist/ directory before it can be installed...");
+			throw new \RuntimeException("the starterkit needs to contain a dist/ directory before it can be installed...");
 		}
 		
 		// check for composer.json. if it exists use it for determining things. otherwise just mirror dist/ to source/
@@ -160,7 +160,7 @@ class Fetch {
 		if (strpos($package, "/") !== false) {
 			list($org,$repo) = explode("/",$package);
 		} else {
-			Console::writeError("please provide a real path to a package...");
+			throw new \RuntimeException("please provide a real path to a package...");
 		}
 		
 		return array($org,$repo,$tag);

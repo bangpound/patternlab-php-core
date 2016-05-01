@@ -33,11 +33,11 @@ class Template {
 		
 		// make sure config vars exist
 		if (!Config::getOption("patternExtension")) {
-			Console::writeError("the pattern extension config option needs to be set...");
+			throw new \RuntimeException("the pattern extension config option needs to be set...");
 		}
 		
 		if (!Config::getOption("styleguideKit")) {
-			Console::writeError("the styleguideKit config option needs to be set...");
+			throw new \RuntimeException("the styleguideKit config option needs to be set...");
 		}
 		
 		// set-up config vars

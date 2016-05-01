@@ -51,7 +51,7 @@ class Watcher extends Builder {
 		
 		// double-checks options was properly set
 		if (empty($options)) {
-			Console::writeError("need to pass options to generate...");
+			throw new \RuntimeException("need to pass options to generate...");
 		}
 		
 		// set default attributes
@@ -325,13 +325,13 @@ class Watcher extends Builder {
 		// double-checks options was properly set
 		$starterKit = Config::getOption("starterKit");
 		if (!$starterKit) {
-			Console::writeError("need to have a starterkit set in the config...");
+			throw new \RuntimeException("need to have a starterkit set in the config...");
 		}
 		
 		// set-up the full starterkit path
 		$starterKitPath = Config::getOption("packagesDir").DIRECTORY_SEPARATOR.$starterKit.DIRECTORY_SEPARATOR."dist";
 		if (!is_dir($starterKitPath)) {
-			Console::writeError("the starterkit doesn't seem to exist...");
+			throw new \RuntimeException("the starterkit doesn't seem to exist...");
 		}
 		
 		// default vars
