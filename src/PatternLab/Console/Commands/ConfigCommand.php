@@ -15,6 +15,7 @@ use \PatternLab\Console;
 use \PatternLab\Generator;
 use \PatternLab\Timer;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -49,12 +50,14 @@ class ConfigCommand extends Command {
 			}
 			
 			// iterate over each option and spit it out
+			$table = new Table($output);
+			$table->setHeaders(['name', 'value']);
 			foreach ($options as $optionName => $optionValue) {
 				$optionValue = (is_array($optionValue)) ? implode(", ",$optionValue) : $optionValue;
 				$optionValue = (!$optionValue) ? "false" : $optionValue;
-				$spacer      = Console::getSpacer($lengthLong,strlen($optionName));
-				$output->writeln("<info>".$optionName.":</info>".$spacer.$optionValue);
+				$table->addRow([$optionName, $optionValue]);
 			}
+			$table->render();
 			
 		} else if ($input->getOption("get")) {
 			

@@ -84,22 +84,6 @@ class Console {
 	}
 	
 	/**
-	* Make sure the space is properly set between long command options and short command options
-	* @param  {Integer}       the longest length of the command's options
-	* @param  {Integer}       the character length of the given option
-	*/
-	public static function getSpacer($lengthLong,$itemLongLength) {
-		$i            = 0;
-		$spacer       = " ";
-		$spacerLength = $lengthLong - $itemLongLength;
-		while ($i < $spacerLength) {
-			$spacer .= " ";
-			$i++;
-		}
-		return $spacer;
-	}
-	
-	/**
 	* Modify a line to include the given tag by default
 	* @param  {String}        the content to be written out
 	*/
