@@ -43,7 +43,7 @@
 		"symfony/console": "^3.0",
 		"symfony/process": "^3.0",
 		"pimple/pimple": "^3.0",
-		"silex/providers": "^2.0@dev"
+		"silex/api": "^2.0@dev"
 	},
 	"extra": {
 		"branch-alias": {
