@@ -66,6 +66,9 @@ class ServiceProvider implements ServiceProviderInterface, EventListenerProvider
         $pimple['command.export'] = function () {
             return new Commands\ExportCommand();
         };
+        $pimple['command.update'] = function () {
+            return new Commands\UpdateCommand();
+        };
         $pimple['command.fetch'] = function () {
             return new Commands\FetchCommand();
         };
