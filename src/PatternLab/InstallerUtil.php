@@ -53,7 +53,7 @@ class InstallerUtil {
 	/**
 	* Common init sequence
 	*/
-	protected static function init(InputInterface $input, OutputInterface $output) {
+	public static function init(InputInterface $input, OutputInterface $output) {
 
 		// start the timer
 		Timer::start();
