@@ -84,33 +84,6 @@ class Console {
 	}
 	
 	/**
-	* Return the command that was given in the command line arguments
-	*
-	* @return {String}      the command. passes false if no command was found
-	*/
-	public static function getCommand() {
-		foreach (self::$commands as $command => $attributes) {
-			if (isset(self::$options[$command]) || isset(self::$options[$attributes["commandShort"]])) {
-				return $command;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	* Load all of the rules related to Pattern Data
-	*/
-	public static function loadCommands() {
-		foreach (glob(__DIR__."/Console/Commands/*.php") as $filename) {
-			$command = str_replace(".php","",str_replace(__DIR__."/Console/Commands/","",$filename));
-			if ($command[0] != "_") {
-				$commandClass = "\PatternLab\Console\Commands\\".$command;
-				self::$commandInstances[] = new $commandClass();
-			}
-		}
-	}
-	
-	/**
 	* Make sure the space is properly set between long command options and short command options
 	* @param  {Integer}       the longest length of the command's options
 	* @param  {Integer}       the character length of the given option
@@ -124,16 +97,6 @@ class Console {
 			$i++;
 		}
 		return $spacer;
-	}
-	
-	/**
-	* Make a path human readable by dropping the base dir
-	* @param  {String}        the path to clean
-	*
-	* @return {String}        cleaned up path
-	*/
-	public static function getHumanReadablePath($path) {
-		return str_replace(Config::getOption("baseDir"), "./", $path);
 	}
 	
 	/**
