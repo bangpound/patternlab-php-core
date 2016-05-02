@@ -15,10 +15,10 @@ namespace PatternLab\Console\Commands;
 
 use \PatternLab\Config;
 use \PatternLab\Console;
-use \PatternLab\Console\Command;
 use \PatternLab\FileUtil;
 use \PatternLab\Generator;
 use \PatternLab\Timer;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
