@@ -12,9 +12,15 @@
 
 namespace PatternLab;
 
+use Composer\Installer\PackageEvent;
+use Composer\Plugin\CommandEvent;
 use \PatternLab\Config;
 use \PatternLab\Console;
 use \PatternLab\Timer;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Filesystem\Filesystem;
 use \Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use \Symfony\Component\Finder\Finder;
@@ -47,13 +53,13 @@ class InstallerUtil {
 	/**
 	* Common init sequence
 	*/
-	protected static function init() {
+	protected static function init(InputInterface $input, OutputInterface $output) {
 
 		// start the timer
 		Timer::start();
 
 		// initialize the console to print out any issues
-		Console::init();
+		Console::init($input, $output);
 
 		// initialize the config for the pluginDir
 		$baseDir = __DIR__."/../../../../../";
@@ -393,10 +399,10 @@ class InstallerUtil {
 	 * Run the PL tasks when a package is installed
 	 * @param  {Object}     a script event object from composer
 	 */
-	public static function postPackageInstall($event) {
+	public static function postPackageInstall(PackageEvent $event) {
 
 		// run the console and config inits
-		self::init();
+		self::init(new ArgvInput(), new ConsoleOutput());
 
 		// run the tasks based on what's in the extra dir
 		self::runTasks($event,"install");
@@ -407,10 +413,10 @@ class InstallerUtil {
 	 * Run the PL tasks when a package is updated
 	 * @param  {Object}     a script event object from composer
 	 */
-	public static function postPackageUpdate($event) {
+	public static function postPackageUpdate(PackageEvent $event) {
 
 		// run the console and config inits
-		self::init();
+		self::init(new ArgvInput(), new ConsoleOutput());
 
 		self::runTasks($event,"update");
 
@@ -420,14 +426,14 @@ class InstallerUtil {
 	 * Ask questions after the create package is done
 	 * @param  {Object}     a script event object from composer
 	 */
-	public static function postCreateProjectCmd($event) {
+	public static function postCreateProjectCmd(PackageEvent $event) {
 
 		// see if there is an extra component
 		$extra = $event->getComposer()->getPackage()->getExtra();
 
 		if (isset($extra["patternlab"])) {
 
-			self::init();
+			self::init(new ArgvInput(), new ConsoleOutput());
 			Console::writeLine("");
 
 			// see if we have any starterkits to suggest
@@ -485,10 +491,10 @@ class InstallerUtil {
 	 * Make sure certain things are set-up before running the installation of a package
 	 * @param  {Object}     a script event object from composer
 	 */
-	public static function preInstallCmd($event) {
+	public static function preInstallCmd(Event $event) {
 
 		// run the console and config inits
-		self::init();
+		self::init(new ArgvInput(), new ConsoleOutput());
 
 		// default vars
 		$sourceDir   = Config::getOption("sourceDir");
@@ -509,10 +515,10 @@ class InstallerUtil {
 	 * Make sure pattern engines and listeners are removed on uninstall
 	 * @param  {Object}     a script event object from composer
 	 */
-	public static function prePackageUninstallCmd($event) {
+	public static function prePackageUninstallCmd(PackageEvent $event) {
 
 		// run the console and config inits
-		self::init();
+		self::init(new ArgvInput(), new ConsoleOutput());
 
 		// get package info
 		$package   = $event->getOperation()->getPackage();
