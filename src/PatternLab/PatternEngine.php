@@ -65,13 +65,13 @@ class PatternEngine {
 		}
 		
 		// make sure the pattern engine data exists
-		if (file_exists($packagesDir."/patternengines.json")) {
+		if (file_exists($packagesDir."/patternengines.php")) {
 			
 			// get pattern engine list data
-			$patternEngineList = json_decode(file_get_contents($packagesDir."/patternengines.json"), true);
+			$patternEngineList = include $packagesDir."/patternengines.php";
 			
 			// get the pattern engine info
-			foreach ($patternEngineList["patternengines"] as $patternEngineName) {
+			foreach ($patternEngineList as $patternEngineName) {
 				
 				self::$rules[] = new $patternEngineName();
 				

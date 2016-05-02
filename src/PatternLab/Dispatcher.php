@@ -54,13 +54,13 @@ class Dispatcher {
 		}
 		
 		// make sure the listener data exists
-		if (file_exists($packagesDir."/listeners.json")) {
+		if (file_exists($packagesDir."/listeners.php")) {
 			
 			// get listener list data
-			$listenerList = json_decode(file_get_contents($packagesDir."/listeners.json"), true);
+			$listenerList = include $packagesDir."/listeners.php";
 			
 			// get the listener info
-			foreach ($listenerList["listeners"] as $listenerName) {
+			foreach ($listenerList as $listenerName) {
 				
 				if ($listenerName[0] != "_") {
 					$listener  = new $listenerName();
