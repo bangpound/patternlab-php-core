@@ -17,8 +17,11 @@ use \Colors\Color;
 use \PatternLab\Console\Event as ConsoleEvent;
 use \PatternLab\Dispatcher;
 use \PatternLab\Timer;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class Console {
 	
@@ -41,9 +44,15 @@ class Console {
 	 */
 	private static $output;
 
-	public static function init(InputInterface $input, OutputInterface $output) {
+	/**
+	 * @var HelperSet
+	 */
+	private static $helperSet;
+
+	public static function init(InputInterface $input, OutputInterface $output, HelperSet $helperSet) {
 		self::$input = $input;
 		self::$output = $output;
+		self::$helperSet = $helperSet;
 		
 		// double-check this is being run from the command line
 		if (php_sapi_name() != 'cli') {
@@ -208,14 +217,12 @@ class Console {
 			$prompt .= " <options>".$options."</options> >";
 		}
 		
-		// make sure no end-of-line is added
-		$prompt .= " <nophpeol>";
-		
+		/** @var QuestionHelper $helper */
+		$helper = self::$helperSet->get('question');
+		$c = self::$color;
+		$question = new Question(self::addTags($c($prompt)->colorize(),$tag));
 		// open the terminal and wait for feedback
-		$stdin = fopen("php://stdin", "r");
-		Console::writeTag($tag,$prompt);
-		$input = trim(fgets($stdin));
-		fclose($stdin);
+		$input = $helper->ask(self::$input, self::$output, $question);
 		
 		// check to see if it should be lowercased before sending back
 		return ($lowercase) ? strtolower($input) : $input;
