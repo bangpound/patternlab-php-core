@@ -20,6 +20,8 @@ use \PatternLab\Timer;
 use \PatternLab\Zippy\UnpackFileStrategy;
 use \Symfony\Component\Filesystem\Filesystem;
 use \Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\Process;
 
 class Fetch {
 	
@@ -36,9 +38,12 @@ class Fetch {
 		}
 		
 		// run composer
-		$composerPath = Config::getOption("coreDir").DIRECTORY_SEPARATOR."bin/composer.phar";
-		passthru("php ".$composerPath." require ".$package);
-		
+		$finder = new ExecutableFinder();
+		$cmd = $finder->find('composer');
+		$process = new Process($cmd .' require '. $package);
+		$process->run(function ($type, $data) {
+			Console::writeLine($data);
+		});
 	}
 	
 	/**
