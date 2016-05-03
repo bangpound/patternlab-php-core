@@ -167,7 +167,11 @@ class Console {
 		/** @var QuestionHelper $helper */
 		$helper = self::$helperSet->get('question');
 		$c = self::$color;
-		$question = new Question(self::addTags($c($prompt)->colorize(),$tag));
+		// Find capital letter which becomes the default.
+		if (preg_match('/[A-Z]/', $options, $matches)) {
+			$default = $matches[0];
+		}
+		$question = new Question(self::addTags($c($prompt)->colorize(),$tag), $default);
 		// open the terminal and wait for feedback
 		$input = $helper->ask(self::$input, self::$output, $question);
 		
